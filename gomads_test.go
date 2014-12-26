@@ -15,5 +15,13 @@ var _ = Describe("Monads", func() {
 
 			Expect(m.Value()).To(BeNil())
 		})
+
+		It("can be tricked into returning something if nothing was provided", func() {
+			m := Maybe(func() interface{} {
+				return nil
+			}).OrSome("fooled you!")
+
+			Expect(m.Value()).To(Equal("fooled you!"))
+		})
 	})
 })
