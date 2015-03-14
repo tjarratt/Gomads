@@ -23,5 +23,15 @@ var _ = Describe("Monads", func() {
 
 			Expect(m.Value()).To(Equal("fooled you!"))
 		})
+
+		It("can chain maybe-values together", func() {
+			m := Maybe(func() interface{} {
+				return nil
+			}).OrSome(Maybe(func() interface{} {
+				return "chained"
+			}))
+
+			Expect(m.Value()).To(Equal("chained"))
+		})
 	})
 })

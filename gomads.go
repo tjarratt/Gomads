@@ -10,7 +10,12 @@ func (m maybeValue) Value() interface{} {
 
 func (m maybeValue) OrSome(v interface{}) MaybeValue {
 	if m.v == nil {
-		m.v = v
+		maybe, ok := v.(maybeValue)
+		if ok {
+			m.v = maybe.v
+		} else {
+			m.v = v
+		}
 	}
 
 	return m
