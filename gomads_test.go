@@ -33,5 +33,13 @@ var _ = Describe("Monads", func() {
 
 			Expect(m.Value()).To(Equal("chained"))
 		})
+
+		It("treats funcs that panic as nil", func() {
+			m := Maybe(func() interface{} {
+				panic("woah there")
+			})
+
+			Expect(m.Value()).To(BeNil())
+		})
 	})
 })

@@ -26,6 +26,11 @@ type MaybeValue interface {
 	OrSome(interface{}) MaybeValue
 }
 
-func Maybe(unit func() interface{}) MaybeValue {
-	return maybeValue{v: unit()}
+func Maybe(unit func() interface{}) (m maybeValue) {
+	defer func() {
+		recover()
+	}()
+
+	m.v = unit()
+	return m
 }
