@@ -7,7 +7,7 @@ import (
 )
 
 var _ = Describe("Monads", func() {
-	Context("Maybe", func() {
+	Describe("Maybe", func() {
 		It("can sometimes contain a value", func() {
 			m := Maybe(func() interface{} {
 				return nil
@@ -40,6 +40,38 @@ var _ = Describe("Monads", func() {
 			})
 
 			Expect(m.Value()).To(BeNil())
+		})
+	})
+
+	Describe("chained errors", func() {
+		It("can be used to chain operations that may fail", func() {
+			e := Error(func(thunk interface{}) interface{} {
+				return 5
+			}).Compose(Error(func(thunk interface{}) interface{} {
+				return 1
+			}))
+
+			Expect(e.Value()).To(Equal(1))
+		})
+
+		It("returns nil if any of the operations panics", func() {
+			e := Error(func(_ interface{}) interface{} {
+				return 5
+			}).Compose(Error(func(_ interface{}) interface{} {
+				panic("FFFFFFFFFFFFFFFFUUUUUUUUUUUUUUU")
+			}))
+
+			Expect(e.Value()).To(BeNil())
+		})
+
+		It("chains the result of the computation along through each func", func() {
+			e := Error(func(_ interface{}) interface{} {
+				return 1
+			}).Compose(Error(func(thunk interface{}) interface{} {
+				return thunk.(int) + 1
+			}))
+
+			Expect(e.Value()).To(Equal(2))
 		})
 	})
 })
